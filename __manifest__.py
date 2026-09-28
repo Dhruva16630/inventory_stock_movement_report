@@ -4,6 +4,9 @@
     "depends":[
         "stock",
     ],
-    "data":[],
+    "data":[
+        "security/ir.model.access.csv",
+        "views/inventory_stock_movement_report.xml"
+    ],
     "installable":True
 }

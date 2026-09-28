@@ -13,6 +13,18 @@ class InventoryStockMovementReport(models.Model):
         readonly = True
     )
     
+    product = fields.Many2one(
+        "product.product",
+        string="Product",
+        readonly = True
+    )
+    
+    product_category = fields.Many2one(
+        "product.category",
+        string="Product Category",
+        readonly = True
+    )
+    
     # stock.picking
     source_location = fields.Many2one(
         "stock.location",
@@ -50,7 +62,7 @@ class InventoryStockMovementReport(models.Model):
     )
     
     picking_type = fields.Many2one(
-        "stock.package.type",
+        "stock.picking.type",
         string="Picking Type",
         readonly = True
     )
@@ -61,15 +73,49 @@ class InventoryStockMovementReport(models.Model):
         readonly = True
     )
     
-    # -----------------
-    product = fields.Many2one(
-        "product.product",
-        string="Product",
-        readonly = True
-    )
     
-    product_category = fields.Many2one(
-        "product.category",
-        string="Product Category",
-        readonly = True
-    )
+    def init(self):
+        tools.drop_view_if_exists(
+            self.env.cr,
+            self._table
+        )
+        
+        self.env.cr.execute("""
+            CREATE VIEW inventory_stock_movement_report AS(
+                SELECT
+                    sm.id AS id,
+                    pp.id AS product,
+                    pt.categ_id AS product_category,
+                    sm.product_uom_qty AS qty,
+                    sl.id AS source_location,
+                    sld.id AS destination_location,
+                    sm.reference AS reference,
+                    sm.date AS scheduled_date,
+                    sm.state AS state,
+                    spt.id AS picking_type,
+                    sw.id AS warehouse
+                    
+                FROM stock_move sm
+                
+                JOIN product_product pp
+                    ON pp.id = sm.product_id
+                
+                JOIN product_template pt
+                    ON pt.id = pp.product_tmpl_id
+                
+                JOIN stock_location sl
+                    ON sl.id = sm.location_id
+                    
+                JOIN stock_location sld 
+                    ON sld.id = sm.location_dest_id
+                
+                JOIN stock_picking sp 
+                    ON sp.id = sm.picking_id
+                
+                JOIN stock_picking_type spt
+                    ON spt.id = sp.picking_type_id
+                
+                JOIN stock_warehouse sw
+                    ON sw.id = sm.warehouse_id
+            )
+        """)

@@ -1,0 +1,33 @@
+<odoo>
+    <record id="view_inventory_stock_movement_report_list" model="ir.ui.view">
+        <field name="name">inventory.stock.movement.report.list</field>
+        <field name="model">inventory.stock.movement.report</field>
+        <field name="arch" type="xml">
+            <list string="Inventory Stock Movement Report">
+                <field name="product"/>
+                <field name="product_category"/>
+                <field name="qty"/>
+                <field name="source_location"/>
+                <field name="destination_location"/>
+                <field name="reference"/>
+                <field name="scheduled_date"/>
+                <field name="state"/>
+                <field name="picking_type"/>
+                <field name="warehouse"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_inventory_stock_movement_report" model="ir.actions.act_window">
+        <field name="name">Inventory Stock Movement Report</field>
+        <field name="res_model">inventory.stock.movement.report</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <menuitem
+        id="menu_inventory_stock_movement_report"
+        name="Inventory Stock Movement Report"
+        parent="stock.menu_stock_root"
+        action="action_inventory_stock_movement_report"
+    />
+</odoo>
