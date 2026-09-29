@@ -90,7 +90,7 @@ class InventoryStockMovementReport(models.Model):
                     sl.id AS source_location,
                     sld.id AS destination_location,
                     sm.reference AS reference,
-                    sp.date AS scheduled_date,
+                    sm.date AS scheduled_date,
                     sm.state AS state,
                     spt.id AS picking_type,
                     sw.id AS warehouse
